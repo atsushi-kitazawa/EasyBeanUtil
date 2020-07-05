@@ -10,8 +10,11 @@ import java.util.HashSet;
 import org.junit.Test;
 
 import com.example.easy.beanutil.bean.Dest;
+import com.example.easy.beanutil.bean.DestEnum;
+import com.example.easy.beanutil.bean.EnumTest;
 import com.example.easy.beanutil.bean.Pojo;
 import com.example.easy.beanutil.bean.Src;
+import com.example.easy.beanutil.bean.SrcEnum;
 
 public class EasyBeanUtilTest {
 
@@ -20,6 +23,13 @@ public class EasyBeanUtilTest {
 		Dest dest = new Dest();
 		EasyBeanUtil.copyProperty(createSrc(), dest);
 		assertThat(dest, is(createDest()));
+	}
+
+	@Test
+	public void copy2() throws Exception {
+		DestEnum dest = new DestEnum();
+		EasyBeanUtil.copyProperty(createSrcEnum(), dest);
+		assertThat(dest, is(createDestEnum()));
 	}
 
 	@Test
@@ -91,6 +101,18 @@ public class EasyBeanUtilTest {
 		dest.setDate(1593874800000l);
 		dest.setDateL("2020-07-27 12:30:00");
 		dest.setDatel("2020-07-19 05:25:00");
+		return dest;
+	}
+
+	private SrcEnum createSrcEnum() {
+		SrcEnum src = new SrcEnum();
+		src.setE(EnumTest.AAA);
+		return src;
+	}
+
+	private DestEnum createDestEnum() {
+		DestEnum dest = new DestEnum();
+		dest.setE(0);
 		return dest;
 	}
 }

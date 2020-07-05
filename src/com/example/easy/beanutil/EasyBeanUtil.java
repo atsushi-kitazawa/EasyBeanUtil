@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.example.easy.beanutil.annotation.DatetimeCopy;
+import com.example.easy.beanutil.annotation.EnumCopy;
 import com.example.easy.beanutil.annotation.IgnoreCopy;
+import com.example.easy.beanutil.bean.EnumTest;
 import com.example.easy.beanutil.bean.Pojo;
 import com.example.easy.beanutil.bean.Src;
 
@@ -43,6 +45,16 @@ public class EasyBeanUtil {
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						String timeStr = format.format(new Date(time));
 						df.set(dest, timeStr);
+						continue;
+					} else {
+						throw new Exception();
+					}
+				}
+
+				if (sf.getAnnotation(EnumCopy.class) != null) {
+					if (EnumTest.class.equals(sf.getType())) {
+						EnumTest val = (EnumTest) sf.get(src);
+						df.set(dest, val.getCode());
 						continue;
 					} else {
 						throw new Exception();
