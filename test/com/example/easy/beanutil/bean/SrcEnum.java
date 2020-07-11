@@ -6,6 +6,8 @@ public class SrcEnum {
 
 	@EnumCopy
 	private EnumTest e;
+	@EnumCopy
+	private int i;
 
 	public EnumTest getE() {
 		return e;
@@ -15,9 +17,17 @@ public class SrcEnum {
 		this.e = e;
 	}
 
+	public int getI() {
+		return i;
+	}
+
+	public void setI(int i) {
+		this.i = i;
+	}
+
 	@Override
 	public String toString() {
-		return "SrcEnum [e=" + e + "]";
+		return "SrcEnum [e=" + e + ", i=" + i + "]";
 	}
 
 	@Override
@@ -25,6 +35,7 @@ public class SrcEnum {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((e == null) ? 0 : e.hashCode());
+		result = prime * result + i;
 		return result;
 	}
 
@@ -38,6 +49,8 @@ public class SrcEnum {
 			return false;
 		SrcEnum other = (SrcEnum) obj;
 		if (e != other.e)
+			return false;
+		if (i != other.i)
 			return false;
 		return true;
 	}

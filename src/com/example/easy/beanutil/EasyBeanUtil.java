@@ -1,11 +1,14 @@
 package com.example.easy.beanutil;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import com.example.easy.beanutil.annotation.DatetimeCopy;
 import com.example.easy.beanutil.annotation.EnumCopy;
@@ -32,15 +35,16 @@ public class EasyBeanUtil {
 				sf.setAccessible(true);
 				df.setAccessible(true);
 
+				Class<?> sfType = sf.getType();
 				if (sf.getAnnotation(DatetimeCopy.class) != null) {
-					if (String.class.equals(sf.getType())) {
+					if (String.class.equals(sfType)) {
 						String timeStr = (String) sf.get(src);
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Date parseDate = format.parse(timeStr);
 						long time = parseDate.getTime();
 						df.set(dest, time);
 						continue;
-					} else if (long.class.equals(sf.getType()) || Long.class.equals(sf.getType())) {
+					} else if (long.class.equals(sfType) || Long.class.equals(sfType)) {
 						Long time = (Long) sf.get(src);
 						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						String timeStr = format.format(new Date(time));
@@ -52,17 +56,47 @@ public class EasyBeanUtil {
 				}
 
 				if (sf.getAnnotation(EnumCopy.class) != null) {
-					if (EnumTest.class.equals(sf.getType())) {
+					if (EnumTest.class.equals(sfType)) {
 						EnumTest val = (EnumTest) sf.get(src);
 						df.set(dest, val.getCode());
+						continue;
+					} else if (Integer.class.equals(sfType) || int.class.equals(sfType)) {
+						Object val = (Object) sf.get(src);
+						for (EnumTest eVal : EnumTest.values()) {
+							if (val.equals(eVal.getCode())) {
+								df.set(dest, eVal);
+								break;
+							}
+						}
 						continue;
 					} else {
 						throw new Exception();
 					}
 				}
+
+				if (List.class.equals(sfType)) {
+					ParameterizedType pt = (ParameterizedType) df.getGenericType();
+					Class<?> destClazz = (Class<?>) pt.getActualTypeArguments()[0];
+					if (!destClazz.getPackage().getName().startsWith("com.example.easy.beanutil")) {
+						df.set(dest, sf.get(src));
+						continue;
+					} else {
+						List<?> srcLists = (List<?>) sf.get(src);
+						List destLists = new ArrayList();
+						for (Object s : srcLists) {
+							Object d = destClazz.getDeclaredConstructor().newInstance();
+							copyProperty(s, d);
+							destLists.add(d);
+						}
+						df.set(dest, destLists);
+						continue;
+					}
+				}
+
 				df.set(dest, sf.get(src));
 			}
 		}
+
 		long end = System.currentTimeMillis();
 		System.out.println("copyProperty tile : " + (end - start));
 	}

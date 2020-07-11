@@ -3,21 +3,28 @@ package com.example.easy.beanutil;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.example.easy.beanutil.bean.Dest;
+import com.example.easy.beanutil.bean.DestCollection;
 import com.example.easy.beanutil.bean.DestEnum;
 import com.example.easy.beanutil.bean.EnumTest;
 import com.example.easy.beanutil.bean.Pojo;
+import com.example.easy.beanutil.bean.Pojo2;
 import com.example.easy.beanutil.bean.Src;
+import com.example.easy.beanutil.bean.SrcCollection;
 import com.example.easy.beanutil.bean.SrcEnum;
 
 public class EasyBeanUtilTest {
-
 	@Test
 	public void copy1() throws Exception {
 		Dest dest = new Dest();
@@ -33,6 +40,13 @@ public class EasyBeanUtilTest {
 	}
 
 	@Test
+	public void copy3() throws Exception {
+		DestCollection dest = new DestCollection();
+		EasyBeanUtil.copyProperty(createSrcCollection(), dest);
+		assertThat(dest, is(createDestCollection()));
+	}
+
+	@Test
 	public void test1() {
 		boolean ret1 = long.class.equals(long.class);
 		boolean ret2 = long.class.equals(Long.class);
@@ -42,6 +56,21 @@ public class EasyBeanUtilTest {
 		assertThat(ret2, is(false));
 		assertThat(ret3, is(false));
 		assertThat(ret4, is(true));
+	}
+
+	// @Test
+	public void test2() throws Exception {
+		class Hoge {
+			public List<String> list = new ArrayList<>();
+		}
+
+		Hoge h = new Hoge();
+		Field f = h.getClass().getField("list");
+		Type genericType = f.getGenericType();
+		System.out.println(genericType.getTypeName());
+		for (Type p : ((ParameterizedType) genericType).getActualTypeArguments()) {
+			System.out.println(p.getTypeName());
+		}
 	}
 
 	private static Src createSrc() {
@@ -107,12 +136,28 @@ public class EasyBeanUtilTest {
 	private SrcEnum createSrcEnum() {
 		SrcEnum src = new SrcEnum();
 		src.setE(EnumTest.AAA);
+		src.setI(2);
 		return src;
 	}
 
 	private DestEnum createDestEnum() {
 		DestEnum dest = new DestEnum();
 		dest.setE(0);
+		dest.setI(EnumTest.CCC);
+		return dest;
+	}
+
+	private SrcCollection createSrcCollection() {
+		SrcCollection src = new SrcCollection();
+		// src.setList(Arrays.asList("aaa", "bbb", "ccc"));
+		src.setList(Arrays.asList(new Pojo("a", 0), new Pojo("b", 1), new Pojo("c", 2)));
+		return src;
+	}
+
+	private DestCollection createDestCollection() {
+		DestCollection dest = new DestCollection();
+		// dest.setList(Arrays.asList("aaa", "bbb", "ccc"));
+		dest.setList(Arrays.asList(new Pojo2("a"), new Pojo2("b"), new Pojo2("c")));
 		return dest;
 	}
 }

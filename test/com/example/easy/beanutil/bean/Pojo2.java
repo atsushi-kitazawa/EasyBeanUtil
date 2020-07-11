@@ -1,16 +1,14 @@
 package com.example.easy.beanutil.bean;
 
-public class Pojo {
+public class Pojo2 {
 	private String string;
-	private Integer i;
 
-	public Pojo() {
+	public Pojo2() {
 
 	}
 
-	public Pojo(String string, Integer i) {
+	public Pojo2(String string) {
 		this.string = string;
-		this.i = i;
 	}
 
 	public String getString() {
@@ -21,24 +19,15 @@ public class Pojo {
 		this.string = string;
 	}
 
-	public Integer getI() {
-		return i;
-	}
-
-	public void setI(Integer i) {
-		this.i = i;
-	}
-
 	@Override
 	public String toString() {
-		return "Pojo [s=" + string + ", i=" + i + "]";
+		return "Pojo2 [string=" + string + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((i == null) ? 0 : i.hashCode());
 		result = prime * result + ((string == null) ? 0 : string.hashCode());
 		return result;
 	}
@@ -51,12 +40,7 @@ public class Pojo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pojo other = (Pojo) obj;
-		if (i == null) {
-			if (other.i != null)
-				return false;
-		} else if (!i.equals(other.i))
-			return false;
+		Pojo2 other = (Pojo2) obj;
 		if (string == null) {
 			if (other.string != null)
 				return false;

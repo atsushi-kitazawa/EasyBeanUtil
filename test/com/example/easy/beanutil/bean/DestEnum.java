@@ -3,6 +3,7 @@ package com.example.easy.beanutil.bean;
 public class DestEnum {
 
 	private int e;
+	private EnumTest i;
 
 	public int getE() {
 		return e;
@@ -12,9 +13,17 @@ public class DestEnum {
 		this.e = e;
 	}
 
+	public EnumTest getI() {
+		return i;
+	}
+
+	public void setI(EnumTest i) {
+		this.i = i;
+	}
+
 	@Override
 	public String toString() {
-		return "DestEnum [e=" + e + "]";
+		return "DestEnum [e=" + e + ", i=" + i + "]";
 	}
 
 	@Override
@@ -22,6 +31,7 @@ public class DestEnum {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + e;
+		result = prime * result + ((i == null) ? 0 : i.hashCode());
 		return result;
 	}
 
@@ -35,6 +45,8 @@ public class DestEnum {
 			return false;
 		DestEnum other = (DestEnum) obj;
 		if (e != other.e)
+			return false;
+		if (i != other.i)
 			return false;
 		return true;
 	}
