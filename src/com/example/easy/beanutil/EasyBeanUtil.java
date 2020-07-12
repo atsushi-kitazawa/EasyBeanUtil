@@ -10,6 +10,7 @@ import java.util.List;
 import com.example.easy.beanutil.annotation.DatetimeCopy;
 import com.example.easy.beanutil.annotation.EnumCopy;
 import com.example.easy.beanutil.annotation.IgnoreCopy;
+import com.example.easy.beanutil.annotation.ListCopy;
 import com.example.easy.beanutil.bean.EnumTest;
 
 public class EasyBeanUtil {
@@ -79,26 +80,20 @@ public class EasyBeanUtil {
 				}
 
 				// Process When Field type is List.
-				// If List generic type is Java Runtime Class, copy as is.
-				// If List generic type is Custom Class, recursively call
+				// When ListCopy annotation is added, recursively call
 				// copyProperty.
-				if (List.class.equals(srcType)) {
+				if (srcField.getAnnotation(ListCopy.class) != null) {
+					List<?> srcLists = (List<?>) srcField.get(src);
 					ParameterizedType pt = (ParameterizedType) destField.getGenericType();
 					Class<?> destClazz = (Class<?>) pt.getActualTypeArguments()[0];
-					if (!destClazz.getPackage().getName().startsWith("com.example.easy.beanutil")) {
-						destField.set(dest, srcField.get(src));
-						continue;
-					} else {
-						List<?> srcLists = (List<?>) srcField.get(src);
-						List<Object> destLists = new ArrayList<>();
-						for (Object s : srcLists) {
-							Object d = destClazz.getDeclaredConstructor().newInstance();
-							copyProperty(s, d);
-							destLists.add(d);
-						}
-						destField.set(dest, destLists);
-						continue;
+					List<Object> destLists = new ArrayList<>();
+					for (Object s : srcLists) {
+						Object d = destClazz.getDeclaredConstructor().newInstance();
+						copyProperty(s, d);
+						destLists.add(d);
 					}
+					destField.set(dest, destLists);
+					continue;
 				}
 
 				destField.set(dest, srcField.get(src));

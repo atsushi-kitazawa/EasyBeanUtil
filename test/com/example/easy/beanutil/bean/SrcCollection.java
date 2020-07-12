@@ -3,8 +3,11 @@ package com.example.easy.beanutil.bean;
 import java.util.List;
 import java.util.Map;
 
+import com.example.easy.beanutil.annotation.ListCopy;
+
 public class SrcCollection {
 
+	@ListCopy
 	private List<Pojo> list;
 	private Map<String, String> map;
 
